@@ -15,7 +15,7 @@ A) Data Collection
  - Interest of Organisers (commercial or community)
  - Location, country, continent
  - Start & end date
- - # of attendees
+ - \# of attendees
  - Attendance fee in USD
  - Sponsoring packages
  - Call for Proposal details
