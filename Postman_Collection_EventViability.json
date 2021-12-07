@@ -1,0 +1,362 @@
+	
+info	
+_postman_id	"a6307c6d-39dc-457a-bf19-455158425ff5"
+name	"Sponsoring Viability"
+schema	"https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+item	
+0	
+name	"All event ids"
+event	
+0	
+listen	"test"
+script	
+exec	
+0	"var iterationCounter = 0;"
+1	"pm.collectionVariables.set(\"iterationCounter\", 0);"
+2	"pm.collectionVariables.set(\"AllEventIds\", \"\");"
+3	"pm.collectionVariables.set(\"EventName\", \"\");"
+4	""
+5	""
+6	"pm.test(\"Status code is 200\", function () {"
+7	"    pm.response.to.have.status(200);"
+8	"});"
+9	""
+10	"pm.test(\"Contains event id\", function () {"
+11	"    var jsonData = pm.response.json();"
+12	"    console.log(jsonData.records);"
+13	""
+14	"    pm.collectionVariables.set(\"AllEventIds\", JSON.stringify(jsonData.records));"
+15	"    pm.collectionVariables.set(\"numberOfEvents\", jsonData.records.length);"
+16	"    "
+17	"    pm.expect(jsonData.records[0].id).to.not.empty;"
+18	"});"
+19	""
+20	"postman.setNextRequest(\"Calculate Rating Existing Event\");"
+type	"text/javascript"
+request	
+method	"GET"
+header	[]
+url	
+raw	"https://api.airtable.com/v0/{{AirtableId}}/{{Table}}?fields%5B%5D=Name"
+protocol	"https"
+host	
+0	"api"
+1	"airtable"
+2	"com"
+path	
+0	"v0"
+1	"{{AirtableId}}"
+2	"{{Table}}"
+query	
+0	
+key	"fields%5B%5D"
+value	"Name"
+response	[]
+1	
+name	"Find event id"
+event	
+0	
+listen	"test"
+script	
+exec	
+0	"pm.test(\"Status code is 200\", function () {"
+1	"    if(pm.response.status == 200) {"
+2	"        console.log(\"PROBLEM!\");"
+3	"    }"
+4	"    pm.response.to.have.status(200);"
+5	"});"
+6	""
+7	"pm.test(\"Contains event id\", function () {"
+8	"    var jsonData = pm.response.json();"
+9	"    console.log(jsonData.records[0].id);"
+10	""
+11	"    pm.collectionVariables.set(\"EventId\", jsonData.records[0].id);"
+12	"    pm.expect(jsonData.records[0].id).to.not.empty;"
+13	"});"
+14	""
+15	"pm.collectionVariables.set(\"EventName\", \"\");"
+16	""
+17	"postman.setNextRequest(\"Calculate Rating Existing Event\");"
+type	"text/javascript"
+1	
+listen	"prerequest"
+script	
+exec	
+0	"var eventNameSet = pm.collectionVariables.get(\"EventName\").replace(\"&\", \"%26\");"
+1	"var allEventIds = JSON.parse(pm.collectionVariables.get(\"AllEventIds\"));"
+2	"var numberOfEvents = pm.collectionVariables.get(\"numberOfEvents\");"
+3	"var iterationCounter = pm.collectionVariables.get(\"iterationCounter\");"
+4	""
+5	"if (!eventNameSet && allEventIds && iterationCounter < numberOfEvents) {"
+6	"    console.log(\"no manual event name set\");"
+7	""
+8	"    var eventId = allEventIds[iterationCounter].id;"
+9	"    var eventName = allEventIds[iterationCounter].fields.Name;"
+10	"    pm.collectionVariables.set(\"EventName\", eventName.replace(\"&\", \"%26\"));"
+11	"    console.log(eventId);"
+12	"    //console.log(eventName + \" - \" + pm.collectionVariables.get(\"EventName\"));"
+13	"    iterationCounter++;"
+14	""
+15	"}"
+16	"else if(eventNameSet && !eventName) {"
+17	"    pm.collectionVariables.set(\"EventName\", eventNameSet.replace(\"&\", \"%26\"));"
+18	"}"
+19	"else console.log(\"Run All event ids request first\");"
+20	""
+21	"//pm.collectionVariables.set(\"EventName\", eventNameSet.replace(\"&\", \"%26\"));"
+22	""
+23	"pm.collectionVariables.set(\"iterationCounter\", iterationCounter);"
+24	""
+type	"text/javascript"
+request	
+method	"GET"
+header	[]
+url	
+raw	"https://api.airtable.com/v0/{{AirtableId}}/{{Table}}?filterByFormula=Name=\"{{EventName}}\"&maxRecords=1"
+protocol	"https"
+host	
+0	"api"
+1	"airtable"
+2	"com"
+path	
+0	"v0"
+1	"{{AirtableId}}"
+2	"{{Table}}"
+query	
+0	
+key	"filterByFormula"
+value	"Name=\"{{EventName}}\""
+1	
+key	"maxRecords"
+value	"1"
+response	[]
+2	
+name	"Calculate Rating Existing Event"
+event	
+0	
+listen	"test"
+script	
+exec	
+0	"pm.test(\"Status code is 200\", function () {"
+1	"    pm.response.to.have.status(200);"
+2	"});"
+3	"var rating = 100;"
+4	"var codeOfConduct = false;"
+5	"var diversityIndex = false;"
+6	""
+7	"pm.test(\"returned a dataset\", function () {"
+8	"    // save JSON response to array"
+9	"    var jsonData = pm.response.json();"
+10	"    console.log(\"Motivation: \" + jsonData.fields.Type);"
+11	""
+12	"    //If Airtable has a check for competitive participation for this event, we'll increase the event's rating by 10"
+13	"    console.log(\"Competitive Participation: \" + jsonData.fields['Competitive Participation']);"
+14	"    if(jsonData.fields['Competitive Participation']) rating = rating + 10;"
+15	"    "
+16	"    //If there's no Code of Conduct, make this event unsponsorable by all means i.e. substract 200 points"
+17	"    console.log(\"CoC: \" + jsonData.fields['Code of Conduct']);"
+18	"    if(jsonData.fields['Code of Conduct'] == \"No\") rating = rating - 200;"
+19	"    else {"
+20	"        // reward good practices with COde of Conducts"
+21	"        if(jsonData.fields['Code of Conduct'] == \"Yes, prominently\") rating = rating + 5;"
+22	"        if(jsonData.fields['Code of Conduct'] == \"Yes, in the page footer\") rating = rating + 0;"
+23	"        if(jsonData.fields['Code of Conduct'] == \"Yes, but only during the registration process\") rating = rating - 10;"
+24	"        if(jsonData.fields['Code of Conduct'] == \"Other\") rating = rating - 20;"
+25	"        codeOfConduct = true;"
+26	"    }"
+27	"    "
+28	"    // integrate with qualitative rating, add one point for each positive qualitative feedback"
+29	"    console.log(\"# of Qualitative Feedback: \" + jsonData.fields['# of Qualitative Feedback']);"
+30	"    if(11 > jsonData.fields[\"# of Qualitative Feedback\"] > 0) rating = rating + jsonData.fields[\"# of Qualitative Feedback\"];"
+31	"    else {"
+32	"        if (jsonData.fields[\"# of Qualitative Feedback\"] > 10) rating = rating + 10;"
+33	"        else (rating = rating - 10);"
+34	"    }"
+35	""
+36	"    //Calculate diversity index, target 2022 is > 25% non-male, > 30% non-white"
+37	"    console.log(\"Speakers: \" + jsonData.fields['Speakers']);"
+38	"    console.log(\"Non-Male Speakers: \" + jsonData.fields['Speakers Non-Male Proportion']);"
+39	"    console.log(\"Non-White Speakers: \" + jsonData.fields['Speakers Non-White Proportion']);"
+40	"    var speakers = jsonData.fields.Speakers;"
+41	"    var nonMale = jsonData.fields['Speakers Non-Male Proportion'];"
+42	"    var nonWhite = jsonData.fields['Speakers Non-White Proportion'];"
+43	"    if (nonMale > 0 && nonMale/speakers < 0.25) rating = rating - 100;"
+44	"    else diversityIndex = true;"
+45	"    if (nonWhite > 0 && nonWhite/speakers < 0.30) {"
+46	"        diversityIndex = false;"
+47	"        rating = rating - 100;"
+48	"    }"
+49	"    "
+50	"    console.log(\"Online Availability of Sessions: \" + jsonData.fields['Online Availability of Sessions']);"
+51	"    if (jsonData.fields['Online Availability of Sessions']) rating = rating + 10;"
+52	"    "
+53	"    console.log(\"CfP Application Page: \" + jsonData.fields['CfP Application Page']);"
+54	"    "
+55	"    console.log(\"Fee USD appr.: \" + jsonData.fields['Fee USD appr.']);"
+56	"    if (jsonData.fields['Fee USD appr.'] == 0) rating = rating + 5;"
+57	"    else if (jsonData.fields['Fee USD appr.'] > 50) rating = rating - 10;"
+58	"    "
+59	"    console.log(\"PM/SN as Speakers: \" + jsonData.fields['PM/SN as Speakers']);"
+60	"    if (Array.isArray(jsonData.fields['PM/SN as Speakers'])) jsonData.fields['PM/SN as Speakers'].forEach(evaluateCfP);"
+61	""
+62	"    function evaluateCfP(item) {"
+63	"        if (item == \"Through a CfP\") rating = rating + 10;"
+64	"        if (item == \"As part of sponsoring\") rating = rating - 5;"
+65	""
+66	"    } "
+67	""
+68	"    console.log(\"Promotion of: \" + jsonData.fields['Promotion of']);"
+69	"    if (Array.isArray(jsonData.fields['Promotion of'])) jsonData.fields['Promotion of'].forEach(evaluateTopics);"
+70	"    function evaluateTopics(item) {"
+71	"        if (item == \"API-First Development\") rating = rating + 10;"
+72	"        if (item == \"API Platform\") rating = rating + 10;"
+73	"        if (item == \"Public Workspaces\") rating = rating + 5;"
+74	"        if (item == \"Public API Network\") rating = rating + 10;"
+75	"        if (item == \"Postman Community Programs\") rating = rating + 5;"
+76	""
+77	"    } "
+78	"    console.log(\"Hi-Profile Speakers: \" + jsonData.fields['Celebrity Speakers']);"
+79	"    if(isNaN(jsonData.fields[\"Celebrity Speakers\"])) {"
+80	"        if(jsonData.fields[\"Celebrity Speakers\"] == \"10 or more\") rating = rating + 100; "
+81	"    }"
+82	"    else {"
+83	"        rating = rating + (jsonData.fields[\"Celebrity Speakers\"] * 10);"
+84	"    }"
+85	"    "
+86	""
+87	"    pm.expect(jsonData.fields.Name).to.not.empty;"
+88	"});"
+89	""
+90	"console.log(\"Final Rating: \" + rating);"
+91	""
+92	"pm.test(\"Event has a Code of Conduct\", function () {"
+93	"    pm.expect(codeOfConduct).to.be.true;"
+94	"});"
+95	""
+96	"pm.test(\"Event has a fair share or URM representation\", function () {"
+97	"    pm.expect(diversityIndex).to.be.true;"
+98	"});"
+99	""
+100	"pm.collectionVariables.set(\"finalRating\", rating);"
+101	""
+102	"pm.test(\"Event is sponsorable\", function () {"
+103	"    pm.expect(rating).to.greaterThan(160);"
+104	""
+105	"});"
+106	""
+107	"postman.setNextRequest(\"Update Sponsorability Field\");"
+type	"text/javascript"
+request	
+method	"GET"
+header	[]
+url	
+raw	"https://api.airtable.com/v0/{{AirtableId}}/{{Table}}/{{EventId}}"
+protocol	"https"
+host	
+0	"api"
+1	"airtable"
+2	"com"
+path	
+0	"v0"
+1	"{{AirtableId}}"
+2	"{{Table}}"
+3	"{{EventId}}"
+response	[]
+3	
+name	"Update Sponsorability Field"
+event	
+0	
+listen	"test"
+script	
+exec	
+0	"pm.test(\"Status code is 200\", function () {"
+1	"    pm.response.to.have.status(200);"
+2	"});"
+3	""
+4	"var numberOfEvents = pm.collectionVariables.get(\"numberOfEvents\");"
+5	"var iterationCounter = pm.collectionVariables.get(\"iterationCounter\");"
+6	""
+7	"if (iterationCounter < numberOfEvents) {"
+8	"    postman.setNextRequest(\"Find event id\");"
+9	"}"
+10	"pm.collectionVariables.set(\"EventId\", \"\");"
+type	"text/javascript"
+1	
+listen	"prerequest"
+script	
+exec	
+0	"var finalRating = pm.collectionVariables.get(\"finalRating\");"
+1	"var sponsorability = \"No\"; "
+2	"if (finalRating > 130 ) sponsorability = \"Yes\";"
+3	"pm.collectionVariables.set(\"Sponsorability\", sponsorability);"
+type	"text/javascript"
+request	
+method	"PATCH"
+header	[]
+body	
+mode	"raw"
+raw	"{\n    \"fields\": {\n        \"Sponsoring qualified\": \"{{Sponsorability}}\",\n        \"Internal Rating\": {{finalRating}}\n    }\n}"
+options	
+raw	
+language	"json"
+url	
+raw	"https://api.airtable.com/v0/{{AirtableId}}/{{Table}}/{{EventId}}"
+protocol	"https"
+host	
+0	"api"
+1	"airtable"
+2	"com"
+path	
+0	"v0"
+1	"{{AirtableId}}"
+2	"{{Table}}"
+3	"{{EventId}}"
+response	[]
+auth	
+type	"bearer"
+bearer	
+0	
+key	"token"
+value	"{{APIKey}}"
+type	"string"
+event	
+0	
+listen	"prerequest"
+script	
+type	"text/javascript"
+exec	
+0	""
+1	
+listen	"test"
+script	
+type	"text/javascript"
+exec	
+0	""
+variable	
+0	
+key	"AirtableId"
+value	"app3y5DRzWX0e7HsR"
+1	
+key	"Table"
+value	"Suggestions"
+2	
+key	"EventName"
+value	"apidays Helsinki & North"
+3	
+key	"EventId"
+value	""
+4	
+key	"finalRating"
+value	""
+5	
+key	"Sponsorability"
+value	""
+6	
+key	"AllEventIds"
+value	""
+7	
+key	"numberOfEvents"
+value	""
+8	
+key	"iterationCounter"
+value	""
