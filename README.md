@@ -3,8 +3,7 @@
 
 This process was an implementation of a less-biased (TM) decision matrix, that I designed in my first weeks as a Porgram Manager in DevRel at Postman. It is not without flaws, and can never be the single decision-making power for a contribution of any form to an event. But it can give you a first glance on matching your priorities, especially if you have to handle more than 10 events per calendar year. It is also highly adaptable, once you understood the concept and can do some coding.
 
-## The Process
-A) Data Collection
+## The Setup Process
 1) Set up a Survey Tool (in our case [this Demo Typeform](https://jpr72681q14.typeform.com/to/jNUN5xMj)). You will need a paid plan for this unfortunately. The data collected through this form currently includes:
  - Submitter's name
  - Event name
@@ -22,7 +21,7 @@ A) Data Collection
  - Code of Conduct details
  - Previous participation of colleagues
  - Competitive participation
- - # Speakers and representation of marginalized groups
+ - \# of speakers and representation of marginalized groups
  - Colleagues as speakers
  - Qualitative feedback
  - Opportunity for focus topics
@@ -36,3 +35,6 @@ A) Data Collection
 4) Use the Airtable key from above or re-fetch your [Airtable API key here](https://airtable.com/account).
 5) Run the collection in Postman's Runner.
 6) Watch Airtable how the additional fields Internal Rating and Sponsoring Qualified populate. Enjoy! 
+
+## Continuous usage
+Whenever I get into discussing events with colleagues I ask them to help me out and fill out the form so we can consider the event in a less-biased (TM) way. Although the form is exhausting to fill out, they normally do. I also ask event organisers who approach me with a sponsoring request to fill out the form. They are nromally happy to do so and get a roughj picture of what is important to us. If they leave an e-mal address in the form, make sure to follow up with them.
