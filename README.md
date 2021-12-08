@@ -27,7 +27,7 @@ This process was an implementation of a less-biased (TM) decision matrix, that I
  - Opportunity for focus topics
  - Online availability of sessions post-event
 
-2) Set up your Airtable Base. You can copy and start from [this one](https://airtable.com/invite/l?inviteId=invLXVX5y41POso3x&inviteToken=6eb7c9d7a336bd50a17bd26ec10e74db54e1bb859510c79a873351f147d74f80&utm_source=email), as it already has the necessary table structure set up.
+2) Set up your Airtable Base. You can copy and start from [this one](https://airtable.com/shrj4wLwYro6MbDoj), as it already has the necessary table structure set up.
 4) Copy your [Airtable API key from here](https://airtable.com/account). Leave that window open. You'll need the API key in another step.
 3) [Connect Typeform to Airtable](https://www.typeform.com/help/a/send-data-to-airtable-with-a-typeform-360029263292/). This is a bit awkward as you can;t edit the connection, just delete and re-connect. Alternatively fill the Airtable manually or import from e.g. a spreadsheet.
 4) Clean up and complete data in Airtable. The more data you have the more exact the result will be.
