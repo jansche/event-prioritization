@@ -3,6 +3,8 @@
 
 This process was an implementation of a less-biased (TM) decision matrix, that I designed in my first weeks as a Porgram Manager in DevRel. It is not without flaws, and can never be the single decision-making power for a contribution of any form to an event. But it can give you a first glance on matching your priorities, especially if you have to handle more than 10 events per calendar year. It is also highly adaptable, once you understood the mechanism and can do some coding.
 
+[Here's the step-by-step guide posten on dev.to](https://dev.to/postman/a-devrel-approach-to-prioritising-events-3d7m)
+
 ## The Setup Process
 1) Set up a Survey Tool (in our case [this Demo Typeform](https://jpr72681q14.typeform.com/to/jNUN5xMj)). On Typeform you will need a paid plan for this unfortunately, as it's beyond the free 10 questions. The data collected through this form currently includes:
  - Submitter's name
