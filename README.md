@@ -1,7 +1,7 @@
 # Event Prioritization
 ## How to make a first data-driven assessment on events for sponsoring, participation, contribution, speaking
 
-This process was an implementation of a less-biased (TM) decision matrix, that I designed in my first weeks as a Porgram Manager in DevRel. It is not without flaws, and can never be the single decision-making power for a contribution of any form to an event. But it can give you a first glance on matching your priorities, especially if you have to handle more than 10 events per calendar year. It is also highly adaptable, once you understood the mechanism and can do some coding.
+This process was an implementation of a less-biased (TM) decision matrix, that I designed in my first weeks as a Porgram Manager in Developer Relations at Postman, the developer tooling company. It is not without flaws, and can never be the single decision-making power for a contribution of any form to an event. But it can give you a first glance on matching your priorities, especially if you have to handle more than 10 events per calendar year. It is also highly adaptable, once you understood the mechanism and can do some coding.
 
 [Here's the step-by-step guide posten on dev.to](https://dev.to/postman/a-devrel-approach-to-prioritising-events-3d7m)
 
